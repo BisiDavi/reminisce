@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
+import { IPost } from "../types";
 
-import PostMessage from "../imports";
+import { PostMessage } from "../imports";
 
 const router = express.Router();
 
@@ -25,14 +26,6 @@ export const getPost = async (req: Request, res: Response): Promise<any> => {
     });
   }
 };
-
-interface IPost {
-  title: string;
-  message: string;
-  selectedFile: string;
-  creator: string;
-  tags: string[];
-}
 
 export const createPost = async (req: Request, res: Response) => {
   const { title, message, selectedFile, creator, tags }: IPost = req.body;
@@ -86,13 +79,13 @@ export const deletePost = async (req: Request, res: Response) => {
   res.json({ message: "Post deleted successfully" });
 };
 
-export const likePost = async (req: Request, res: Response) => {
+export const likePost = async (req: Request, res: Response): Promise<any> => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).send(`No post with id: ${id}`);
   }
-  const post = await PostMessage.findById(id);
+  const post: any = await PostMessage.findById(id);
 
   const updatedPost = await PostMessage.findByIdAndUpdate(
     id,
